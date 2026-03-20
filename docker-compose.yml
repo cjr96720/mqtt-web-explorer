@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  mqtt-explorer:
+    build: .
+    ports:
+      - "8085:80"
+    restart: unless-stopped
