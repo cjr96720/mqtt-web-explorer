@@ -15,11 +15,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useMqtt } from '@/hooks/useMqtt'
 import { useTopicStore } from '@/stores/topicStore'
@@ -86,10 +86,8 @@ export function PublishForm({ open, onClose }: PublishFormProps) {
     setContinuousState({ running: false })
   }, [])
 
-  // Clean up on unmount or dialog close
-  useEffect(() => {
-    if (!open) stopContinuous()
-  }, [open, stopContinuous])
+  // Continuous publish intentionally keeps running when the panel is closed —
+  // it's a non-modal side panel, so users can close it without interrupting an in-flight run.
 
   // Stop continuous publish on disconnect
   useEffect(() => {
@@ -194,11 +192,15 @@ export function PublishForm({ open, onClose }: PublishFormProps) {
   const canStartContinuous = isConnected && !!topic.trim() && intervalValid && durationValid
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) { stopContinuous(); onClose() } }}>
-      <DialogContent className="sm:max-w-[520px] max-h-[85vh] flex flex-col p-0 gap-0">
-        <DialogHeader className="px-5 py-3 border-b border-border">
-          <DialogTitle className="text-sm">Publish Message</DialogTitle>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={(o) => { if (!o) onClose() }} modal={false}>
+      <SheetContent
+        showOverlay={false}
+        className="w-full sm:max-w-[420px] h-full flex flex-col p-0 gap-0 pointer-events-auto"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <SheetHeader className="px-5 py-3 border-b border-border space-y-0">
+          <SheetTitle className="text-sm">Publish Message</SheetTitle>
+        </SheetHeader>
 
         <div className="flex-1 overflow-hidden flex flex-col">
           {/* Publish form */}
@@ -486,7 +488,7 @@ export function PublishForm({ open, onClose }: PublishFormProps) {
             </ScrollArea>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

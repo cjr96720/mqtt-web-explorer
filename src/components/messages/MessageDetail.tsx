@@ -104,7 +104,11 @@ export function MessageDetail({ message }: MessageDetailProps) {
         <div>
           <span className="text-xs font-medium text-muted-foreground">Payload</span>
           <div className="mt-1">
-            <PayloadViewer payload={message.payload} />
+            <PayloadViewer
+              payload={message.payload}
+              payloadRaw={message.payloadRaw}
+              topic={message.topic}
+            />
           </div>
         </div>
       </div>

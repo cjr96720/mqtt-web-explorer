@@ -11,6 +11,7 @@ export interface MqttMessage {
   id: string;
   topic: string;
   payload: string;
+  payloadRaw: Uint8Array;
   qos: 0 | 1 | 2;
   retain: boolean;
   timestamp: number;
