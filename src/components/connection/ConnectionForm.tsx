@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Wifi, WifiOff, Send, Sun, Moon, Settings, Eye, EyeOff } from 'lucide-react'
+import { Wifi, WifiOff, Send, Sun, Moon, Settings, Eye, EyeOff, FileCode2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,6 +14,7 @@ import {
 import { useConnectionStore } from '@/stores/connectionStore'
 import { useMqtt } from '@/hooks/useMqtt'
 import { cn } from '@/lib/utils'
+import { SchemaManager } from '@/components/schema/SchemaManager'
 
 interface ConnectionFormProps {
   onPublishClick: () => void
@@ -24,6 +25,7 @@ export function ConnectionForm({ onPublishClick, onToggleTheme }: ConnectionForm
   const { config, status, setConfig } = useConnectionStore()
   const { connect, disconnect } = useMqtt()
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [schemaOpen, setSchemaOpen] = useState(false)
   const [localConfig, setLocalConfig] = useState(config)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -111,11 +113,22 @@ export function ConnectionForm({ onPublishClick, onToggleTheme }: ConnectionForm
         <span className="hidden sm:inline">Publish</span>
       </Button>
 
-      {/* Settings */}
+      {/* Schema manager */}
       <Button
         size="icon"
         variant="ghost"
         className="h-8 w-8 ml-auto"
+        onClick={() => setSchemaOpen(true)}
+        title="Protobuf Schema Manager"
+      >
+        <FileCode2 className="h-4 w-4" />
+      </Button>
+
+      {/* Settings */}
+      <Button
+        size="icon"
+        variant="ghost"
+        className="h-8 w-8"
         onClick={() => {
           setLocalConfig(config)
           setSettingsOpen(true)
@@ -134,6 +147,9 @@ export function ConnectionForm({ onPublishClick, onToggleTheme }: ConnectionForm
         <Sun className="h-4 w-4 dark:hidden" />
         <Moon className="h-4 w-4 hidden dark:block" />
       </Button>
+
+      {/* Schema manager dialog */}
+      <SchemaManager open={schemaOpen} onClose={() => setSchemaOpen(false)} />
 
       {/* Settings Dialog */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>

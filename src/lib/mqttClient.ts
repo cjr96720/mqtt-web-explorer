@@ -1,7 +1,7 @@
 import mqtt, { MqttClient, IClientOptions } from 'mqtt';
 import { ConnectionConfig, ConnectionStatus } from '@/types/mqtt';
 
-type MessageCallback = (topic: string, payload: string, qos: 0 | 1 | 2, retain: boolean) => void;
+type MessageCallback = (topic: string, payload: string, payloadRaw: Uint8Array, qos: 0 | 1 | 2, retain: boolean) => void;
 type StatusCallback = (status: ConnectionStatus, error?: string) => void;
 
 export interface PublishResult {
@@ -117,10 +117,11 @@ class MqttExplorerClient {
     });
 
     this.client.on('message', (topic, payload, packet) => {
+      const payloadRaw = new Uint8Array(payload);
       const payloadStr = payload.toString();
       const qos = (packet.qos || 0) as 0 | 1 | 2;
       const retain = packet.retain || false;
-      this.messageCallbacks.forEach(cb => cb(topic, payloadStr, qos, retain));
+      this.messageCallbacks.forEach(cb => cb(topic, payloadStr, payloadRaw, qos, retain));
     });
   }
 

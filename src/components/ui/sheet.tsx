@@ -45,14 +45,17 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  /** Set to false for a non-blocking panel that doesn't dim/cover the rest of the page (pair with Sheet's modal={false}). */
+  showOverlay?: boolean
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   SheetContentProps
->(({ side = 'right', className, children, ...props }, ref) => (
+>(({ side = 'right', className, children, showOverlay = true, ...props }, ref) => (
   <SheetPortal>
-    <SheetOverlay />
+    {showOverlay && <SheetOverlay />}
     <DialogPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}

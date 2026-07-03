@@ -65,11 +65,12 @@ export function useMqttListeners() {
       prevStatus = status;
     });
 
-    const unsubMessage = mqttClient.onMessage((topic, payload, qos, retain) => {
+    const unsubMessage = mqttClient.onMessage((topic, payload, payloadRaw, qos, retain) => {
       const message: MqttMessage = {
         id: `msg-${++messageIdCounter}`,
         topic,
         payload,
+        payloadRaw,
         qos,
         retain,
         timestamp: Date.now(),
